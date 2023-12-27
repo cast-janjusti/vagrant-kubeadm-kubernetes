@@ -4,6 +4,8 @@
 
 set -euxo pipefail
 
+git config --global http.sslBackend schannel
+
 NODENAME=$(hostname -s)
 
 sudo kubeadm config images pull
@@ -33,6 +35,15 @@ touch $config_path/join.sh
 chmod +x $config_path/join.sh
 
 kubeadm token create --print-join-command > $config_path/join.sh
+
+# helm
+curl -LO "https://get.helm.sh/helm-v3.12.1-linux-amd64.tar.gz"
+tar -zxvf helm-v3.12.1-linux-amd64.tar.gz
+sudo mv linux-amd64/helm /usr/local/bin/helm
+# calicoctl
+curl -L https://github.com/projectcalico/calico/releases/download/v${CALICO_VERSION}/calicoctl-linux-amd64 -o calicoctl
+sudo mv calicoctl /usr/local/bin/calicoctl
+sudo chmod +x /usr/local/bin/calicoctl
 
 # Install Calico Network Plugin
 

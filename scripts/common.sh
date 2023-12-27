@@ -6,6 +6,8 @@ set -euxo pipefail
 
 # Variable Declaration
 
+git config --global http.sslBackend schannel
+
 # DNS Setting
 if [ ! -d /etc/systemd/resolved.conf.d ]; then
 	sudo mkdir /etc/systemd/resolved.conf.d/
@@ -25,7 +27,7 @@ sudo swapoff -a
 sudo apt-get update -y
 # Install CRI-O Runtime
 
-VERSION="$(echo ${KUBERNETES_VERSION} | grep -oE '[0-9]+\.[0-9]+')"
+VERSION="$(echo ${KUBERNETES_VERSION} | grep -oP '^(\d+\.\d+)')"
 
 # Create the .conf file to load the modules at bootup
 cat <<EOF | sudo tee /etc/modules-load.d/crio.conf
@@ -61,6 +63,7 @@ sudo apt-get install cri-o cri-o-runc -y
 cat >> /etc/default/crio << EOF
 ${ENVIRONMENT}
 EOF
+sudo cat /vagrant/scripts/crio-cfg/local-registry.yaml >> /etc/containers/registries.conf
 sudo systemctl daemon-reload
 sudo systemctl enable crio --now
 
@@ -68,9 +71,9 @@ echo "CRI runtime installed successfully"
 
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl
-curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v$VERSION/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v$VERSION/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update -y
 sudo apt-get install -y kubelet="$KUBERNETES_VERSION" kubectl="$KUBERNETES_VERSION" kubeadm="$KUBERNETES_VERSION"
 sudo apt-get update -y

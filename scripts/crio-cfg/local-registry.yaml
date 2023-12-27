@@ -1,0 +1,3 @@
+[[registry]]
+location = "172.28.108.16:8082"
+insecure = true

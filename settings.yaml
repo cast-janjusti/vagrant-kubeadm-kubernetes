@@ -26,13 +26,14 @@ nodes:
     memory: 2048
 # Mount additional shared folders from the host into each virtual machine.
 # Note that the project directory is automatically mounted at /vagrant.
-# shared_folders:
-#   - host_path: ../images
-#     vm_path: /vagrant/images
+shared_folders:
+  - host_path: ../
+    vm_path: /host-original
 software:
   box: bento/ubuntu-22.04
   calico: 3.26.0
   # To skip the dashboard installation, set its version to an empty value or comment it out:
   dashboard: 2.7.0
-  kubernetes: 1.27.1-00
+  # kubernetes: 1.27.9-1.1
+  kubernetes: 1.26.1-1.1
   os: xUbuntu_22.04

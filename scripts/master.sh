@@ -4,8 +4,6 @@
 
 set -euxo pipefail
 
-git config --global http.sslBackend schannel
-
 NODENAME=$(hostname -s)
 
 sudo kubeadm config images pull
@@ -62,3 +60,7 @@ EOF
 
 kubectl apply -f https://raw.githubusercontent.com/techiescamp/kubeadm-scripts/main/manifests/metrics-server.yaml
 
+curl -sS https://webi.sh/k9s | sh
+
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.26/deploy/local-path-storage.yaml
+kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'

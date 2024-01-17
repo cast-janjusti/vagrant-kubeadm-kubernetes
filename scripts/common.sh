@@ -6,8 +6,6 @@ set -euxo pipefail
 
 # Variable Declaration
 
-git config --global http.sslBackend schannel
-
 # DNS Setting
 if [ ! -d /etc/systemd/resolved.conf.d ]; then
 	sudo mkdir /etc/systemd/resolved.conf.d/

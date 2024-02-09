@@ -82,3 +82,5 @@ cat > /etc/default/kubelet << EOF
 KUBELET_EXTRA_ARGS=--node-ip=$local_ip
 ${ENVIRONMENT}
 EOF
+
+echo "source /vagrant/scripts/misc/.bashrc" >> /home/vagrant/.bash_aliases
